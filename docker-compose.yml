@@ -9,6 +9,8 @@ services:
     restart: always
     networks:
       - backend
+    ports:
+      - '8761:8761'
 
   products_db:
     container_name: postgres_db

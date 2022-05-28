@@ -12,14 +12,23 @@ services:
     ports:
       - '5000:5000'
 
+  eureka:
+    container_name: eureka
+    build:
+      context: ./eureka
+      dockerfile: Dockerfile
+    restart: always
+    networks:
+      - backend
+    ports:
+      - '8761:8761'
+
   products_db:
     container_name: postgres_db
     image: postgres:14
     restart: always
     networks:
       - backend
-    ports:
-      - '5432:5432'
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
@@ -30,8 +39,6 @@ services:
     restart: always
     networks:
       - backend
-    ports:
-      - '27018:27017'
     environment:
       - MONGO_INITDB_ROOT_USERNAME=mongo
       - MONGO_INITDB_ROOT_PASSWORD=mongo
@@ -42,8 +49,6 @@ services:
     restart: always
     networks:
       - backend
-    ports:
-      - '27017:27017'
     environment:
       - MONGO_INITDB_ROOT_USERNAME=mongo
       - MONGO_INITDB_ROOT_PASSWORD=mongo
@@ -55,7 +60,6 @@ services:
     networks:
       - backend
     ports:
-      - '5672:5672'
       - '15672:15672'
 
   prometheus:
@@ -64,8 +68,6 @@ services:
     restart: always
     networks:
       - backend
-    ports:
-      - '9090:9090'
     volumes:
       - ./prometheus/:/etc/prometheus/
     command:

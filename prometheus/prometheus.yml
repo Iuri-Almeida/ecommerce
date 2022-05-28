@@ -13,3 +13,8 @@ scrape_configs:
     static_configs:
       - targets: [ 'eureka:8761' ]
 
+  - job_name: 'gateway'
+    scrape_interval: 5s
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets: [ 'gateway:5000' ]

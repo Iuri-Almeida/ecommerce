@@ -1,17 +1,6 @@
 version: "3.9"
 
 services:
-  gateway:
-    container_name: gateway
-    build:
-      context: ./gateway
-      dockerfile: Dockerfile
-    restart: always
-    networks:
-      - backend
-    ports:
-      - '5000:5000'
-
   eureka:
     container_name: eureka
     build:
@@ -21,7 +10,16 @@ services:
     networks:
       - backend
     ports:
-      - '8761:8761'
+      - '8761:8761'  
+
+  rabbitmq:
+    container_name: rabbitmq
+    image: rabbitmq:3-management
+    restart: always
+    networks:
+      - backend
+    ports:
+      - '15672:15672'
 
   products_db:
     container_name: postgres_db
@@ -53,14 +51,18 @@ services:
       - MONGO_INITDB_ROOT_USERNAME=mongo
       - MONGO_INITDB_ROOT_PASSWORD=mongo
 
-  rabbitmq:
-    container_name: rabbitmq
-    image: rabbitmq:3-management
+  gateway:
+    container_name: gateway
+    build:
+      context: ./gateway
+      dockerfile: Dockerfile
     restart: always
     networks:
       - backend
     ports:
-      - '15672:15672'
+      - '5000:5000'
+    depends_on:
+      - eureka
 
   prometheus:
     container_name: prometheus
@@ -72,6 +74,9 @@ services:
       - ./prometheus/:/etc/prometheus/
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
+    depends_on:
+      - eureka
+      - gateway
 
   grafana:
     container_name: grafana

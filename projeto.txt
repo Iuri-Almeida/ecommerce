@@ -1,0 +1,38 @@
+Loja de e-commerce
+
+
+Requisitos
+
+- Funcionalidade principal: adicionar produtos a um carrinho e finalizar a compra.
+- Devem ser criados pelo menos 3 micro-serviços: produto, venda e usuário
+- Todos os serviços devem rodar sobre containers
+- Deve ser criado um docker-compose para levantar a infra necessária.
+- Um dos serviços deve ser feito com abordagem reativa.
+- Os serviços devem conter estratégias de resiliência.
+- Deve ser utilizado alguma estratégia de observabilidade, como prometheus, actuator, etc.
+
+
+Formato de entrega:
+
+- Link dos repositórios do github
+
+-----------------------------------------------------------------------------------------------
+
+Prioridades:
+
+1. aplicação local via docker-compose;
+
+2. aplicação em nuvem comercial;
+
+3. frontend.
+
+-----------------------------------------------------------------------------------------------
+
+Dúvidas para a próxima aula:
+
+1. Cloud = nuvem comercial?
+
+2. Transação multiserviço (confirmação de compra, isto é, transação entre products e users).
+
+3. Acessibilidade e descoberta dos serviços.
+

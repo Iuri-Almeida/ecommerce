@@ -1,18 +1,12 @@
 spring:
   application:
-    name: gateway-service
-  cloud:
-    discovery:
-      enabled: true
-    gateway:
-      routes:
-        - id: users-service
-          uri: lb://USERS-SERVICE
-          predicates:
-            - Path=/users/**
+    name: users-service
+  data:
+    mongodb:
+      uri: mongodb://ec-users-db:27017/users
 
 server:
-  port: 5000
+  port: 8081
 
 management:
   endpoints:
@@ -27,4 +21,4 @@ eureka:
     service-url:
       defaultZone: http://ec-eureka:8761/eureka/
   instance:
-    hostname: ec-gateway
+    hostname: ec-users

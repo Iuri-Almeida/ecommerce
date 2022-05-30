@@ -2,6 +2,11 @@ package com.github.sozinhos.ecommerce.products.services;
 
 import com.github.sozinhos.ecommerce.products.entities.Product;
 import com.github.sozinhos.ecommerce.products.repositories.ProductRepository;
+import com.github.sozinhos.ecommerce.products.services.exceptions.ProductDatabaseException;
+import com.github.sozinhos.ecommerce.products.services.exceptions.ProductNotFoundException;
+import com.github.sozinhos.ecommerce.products.services.exceptions.ProductNullParameterException;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,8 +28,25 @@ public class ProductService {
     public Product findById(Long productId) {
         Optional<Product> product = productRepository.findById(productId);
         if (product.isEmpty()) {
-            throw new RuntimeException("Could not find product with id = " + productId);
+            throw new ProductNotFoundException("Could not find product with id = " + productId);
         }
         return product.get();
+    }
+
+    public Product insert(Product product) {
+        if (product.getName() == null || product.getPrice() == null || product.getAmount() == null) {
+            throw new ProductNullParameterException("Parameter with null value");
+        }
+        return productRepository.save(product);
+    }
+
+    public void delete(Long productId) {
+        try {
+            productRepository.deleteById(productId);
+        } catch (EmptyResultDataAccessException e) {
+            throw new ProductNotFoundException("Could not find product with id = " + productId);
+        } catch (DataIntegrityViolationException e) {
+            throw new ProductDatabaseException("Product with other dependencies in database");
+        }
     }
 }

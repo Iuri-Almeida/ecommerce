@@ -31,19 +31,19 @@ public class RabbitMQConfig {
     }
 
     @Bean
-    public Queue ordersPendingQueue() {
-        return new Queue("orders.pending");
+    public Queue ordersPaymentsQueue() {
+        return new Queue("orders.payments");
     }
 
     @Bean
-    public Binding ordersPendingBinding(
-            Queue ordersPendingQueue,
+    public Binding ordersPaymentsBinding(
+            Queue ordersPaymentsQueue,
             TopicExchange ordersExchange
     ) {
         return BindingBuilder
-                .bind(ordersPendingQueue)
+                .bind(ordersPaymentsQueue)
                 .to(ordersExchange)
-                .with("orders.pending");
+                .with("orders.payments");
     }
 
     @Bean
@@ -52,35 +52,35 @@ public class RabbitMQConfig {
     }
 
     @Bean
-    public Queue paymentsSuccessQueue() {
-        return new Queue("payments.success");
+    public Queue paymentsOrdersQueue() {
+        return new Queue("payments.orders");
     }
 
     @Bean
-    public Binding paymentsSuccessBinding(
-            Queue paymentsSuccessQueue,
+    public Binding paymentsOrdersBinding(
+            Queue paymentsOrdersQueue,
             TopicExchange paymentsExchange
     ) {
         return BindingBuilder
-                .bind(paymentsSuccessQueue)
+                .bind(paymentsOrdersQueue)
                 .to(paymentsExchange)
-                .with("payments.success");
+                .with("payments.orders");
     }
 
     @Bean
-    public Queue paymentsErrorQueue() {
-        return new Queue("payments.error");
+    public Queue paymentsProductsQueue() {
+        return new Queue("payments.products");
     }
 
     @Bean
-    public Binding paymentsErrorBinding(
-            Queue paymentsErrorQueue,
+    public Binding paymentsProductsBinding(
+            Queue paymentsProductsQueue,
             TopicExchange paymentsExchange
     ) {
         return BindingBuilder
-                .bind(paymentsErrorQueue)
+                .bind(paymentsProductsQueue)
                 .to(paymentsExchange)
-                .with("payments.error");
+                .with("payments.products");
     }
 
     @Bean

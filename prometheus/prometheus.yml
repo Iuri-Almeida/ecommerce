@@ -2,19 +2,25 @@ global:
   scrape_interval: 10s
 
 scrape_configs:
-  - job_name: 'prometheus'
+  - job_name: 'ec-prometheus'
     scrape_interval: 5s
     static_configs:
-      - targets: [ 'prometheus:9090' ]
+      - targets: [ 'ec-prometheus:9090' ]
 
-  - job_name: 'eureka'
+  - job_name: 'ec-eureka'
     scrape_interval: 5s
     metrics_path: /actuator/prometheus
     static_configs:
-      - targets: [ 'eureka:8761' ]
+      - targets: [ 'ec-eureka:8761' ]
 
-  - job_name: 'gateway'
+  - job_name: 'ec-gateway'
     scrape_interval: 5s
     metrics_path: /actuator/prometheus
     static_configs:
-      - targets: [ 'gateway:5000' ]
+      - targets: [ 'ec-gateway:5000' ]
+
+  - job_name: 'ec-users'
+    scrape_interval: 5s
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets: [ 'ec-users:8081' ]

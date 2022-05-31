@@ -2,7 +2,7 @@ version: "3.9"
 
 services:
   eureka:
-    container_name: eureka
+    container_name: ec-eureka
     build:
       context: ./eureka
       dockerfile: Dockerfile
@@ -13,7 +13,7 @@ services:
       - '8761:8761'  
 
   rabbitmq:
-    container_name: rabbitmq
+    container_name: ec-rabbitmq
     image: rabbitmq:3-management
     restart: always
     networks:
@@ -21,8 +21,8 @@ services:
     ports:
       - '15672:15672'
 
-  products_db:
-    container_name: postgres_db
+  products-db:
+    container_name: ec-postgres-db
     image: postgres:14
     restart: always
     networks:
@@ -31,8 +31,8 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
 
-  orders_db:
-    container_name: orders_db
+  orders-db:
+    container_name: ec-orders-db
     image: mongo:5
     restart: always
     networks:
@@ -41,18 +41,29 @@ services:
       - MONGO_INITDB_ROOT_USERNAME=mongo
       - MONGO_INITDB_ROOT_PASSWORD=mongo
 
-  users_db:
-    container_name: users_db
+  users-db:
+    container_name: ec-users-db
     image: mongo:5
     restart: always
     networks:
       - backend
-    environment:
-      - MONGO_INITDB_ROOT_USERNAME=mongo
-      - MONGO_INITDB_ROOT_PASSWORD=mongo
+
+  users:
+    container_name: ec-users
+    build:
+      context: ./users
+      dockerfile: Dockerfile
+    restart: always
+    networks:
+      - backend
+    depends_on:
+      ec-eureka:
+        condition: service_started      
+      ec-users-db:
+        condition: service_started
 
   gateway:
-    container_name: gateway
+    container_name: ec-gateway
     build:
       context: ./gateway
       dockerfile: Dockerfile
@@ -62,10 +73,13 @@ services:
     ports:
       - '5000:5000'
     depends_on:
-      - eureka
+      ec-eureka:
+        condition: service_started
+      ec-users:
+        condition: service_started
 
   prometheus:
-    container_name: prometheus
+    container_name: ec-prometheus
     image: prom/prometheus
     restart: always
     networks:
@@ -75,11 +89,13 @@ services:
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
     depends_on:
-      - eureka
-      - gateway
+      ec-eureka:
+        condition: service_started
+      ec-gateway:
+        condition: service_started
 
   grafana:
-    container_name: grafana
+    container_name: ec-grafana
     image: grafana/grafana
     restart: always
     networks:
@@ -92,7 +108,8 @@ services:
       - GF_ADMIN_USER=grafana
       - GF_ADMIN_PASSWORD=grafana
     depends_on:
-      - prometheus
+      ec-prometheus:
+        condition: service_started
 
 networks:
   backend:

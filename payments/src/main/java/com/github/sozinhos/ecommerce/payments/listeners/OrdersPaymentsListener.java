@@ -11,20 +11,21 @@ import java.util.Random;
 
 @Component
 @RequiredArgsConstructor
-public class OrdersPendingListener {
+public class OrdersPaymentsListener {
 
     private final RabbitTemplate template;
 
-    @RabbitListener(queues = "orders.pending")
+    @RabbitListener(queues = "orders.payments")
     public void listener(Order order) {
       boolean successfulPayment = new Random().nextInt(100) < 80;
 
       if (successfulPayment) {
           order.setStatus(OrderStatus.SUCCESS);
-          template.convertAndSend("payments", "payments.success", order);
       } else {
           order.setStatus(OrderStatus.ERROR);
-          template.convertAndSend("payments", "payments.error", order);
+          template.convertAndSend("payments", "payments.products", order);
       }
+
+      template.convertAndSend("payments", "payments.orders", order);
     }
 }

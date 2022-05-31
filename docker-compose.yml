@@ -91,9 +91,6 @@ services:
         condition: service_started
       ec-users:
         condition: service_started
-      ec-payments:
-        condition: service_started
-
 
   prometheus:
     container_name: ec-prometheus

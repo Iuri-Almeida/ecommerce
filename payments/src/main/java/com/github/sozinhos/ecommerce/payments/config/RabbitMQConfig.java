@@ -11,11 +11,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class OrderCanceledConfig {
-
-    public static final String QUEUE = "order_canceled_queue";
-    public static final String EXCHANGE = "order_canceled_exchange";
-    public static final String ROUTING_KEY = "order_canceled_key";
+public class RabbitMQConfig {
 
     @Value("${spring.rabbitmq.host}")
     String host;
@@ -30,21 +26,61 @@ public class OrderCanceledConfig {
     String password;
 
     @Bean
-    public Queue queue() {
-        return new Queue(QUEUE);
+    public TopicExchange ordersExchange() {
+        return new TopicExchange("orders");
     }
 
     @Bean
-    public DirectExchange exchange() {
-        return new DirectExchange(EXCHANGE);
+    public Queue ordersPendingQueue() {
+        return new Queue("orders.pending");
     }
 
     @Bean
-    public Binding binding(Queue queue, DirectExchange exchange) {
+    public Binding ordersPendingBinding(
+            Queue ordersPendingQueue,
+            TopicExchange ordersExchange
+    ) {
         return BindingBuilder
-                .bind(queue)
-                .to(exchange)
-                .with(ROUTING_KEY);
+                .bind(ordersPendingQueue)
+                .to(ordersExchange)
+                .with("orders.pending");
+    }
+
+    @Bean
+    public TopicExchange paymentsExchange() {
+        return new TopicExchange("payments");
+    }
+
+    @Bean
+    public Queue paymentsSuccessQueue() {
+        return new Queue("payments.success");
+    }
+
+    @Bean
+    public Binding paymentsSuccessBinding(
+            Queue paymentsSuccessQueue,
+            TopicExchange paymentsExchange
+    ) {
+        return BindingBuilder
+                .bind(paymentsSuccessQueue)
+                .to(paymentsExchange)
+                .with("payments.success");
+    }
+
+    @Bean
+    public Queue paymentsErrorQueue() {
+        return new Queue("payments.error");
+    }
+
+    @Bean
+    public Binding paymentsErrorBinding(
+            Queue paymentsErrorQueue,
+            TopicExchange paymentsExchange
+    ) {
+        return BindingBuilder
+                .bind(paymentsErrorQueue)
+                .to(paymentsExchange)
+                .with("payments.error");
     }
 
     @Bean
@@ -63,7 +99,7 @@ public class OrderCanceledConfig {
     }
 
     @Bean
-    public AmqpTemplate template(ConnectionFactory connectionFactory) {
+    public RabbitTemplate template(ConnectionFactory connectionFactory) {
         RabbitTemplate template = new RabbitTemplate(connectionFactory);
         template.setMessageConverter(this.messageConverter());
         return template;

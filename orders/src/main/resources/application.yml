@@ -1,0 +1,10 @@
+spring:
+  data:
+    mongodb:
+      host: orders_db
+      database: orders_db
+
+  rabbitmq:
+    host: rabbitmq
+    username: guest
+    password: guest

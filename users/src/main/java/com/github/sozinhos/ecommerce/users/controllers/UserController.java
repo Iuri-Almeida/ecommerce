@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import javax.validation.Valid;
+
 @RestController
 @RequestMapping("/users")
 @RequiredArgsConstructor
@@ -25,7 +27,7 @@ public class UserController {
     }
 
     @PostMapping
-    public Mono<User> save(@RequestBody User user) {
+    public Mono<User> save(@Valid @RequestBody User user) {
         return this.userService.save(user);
     }
 

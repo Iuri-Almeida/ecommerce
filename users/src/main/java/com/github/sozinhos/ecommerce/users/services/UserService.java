@@ -1,6 +1,7 @@
 package com.github.sozinhos.ecommerce.users.services;
 
 import com.github.sozinhos.ecommerce.users.entities.User;
+import com.github.sozinhos.ecommerce.users.exceptions.UserNotFoundException;
 import com.github.sozinhos.ecommerce.users.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,7 +19,9 @@ public class UserService {
     }
 
     public Mono<User> findById(String id) {
-        return this.userRepository.findById(id);
+        return this.userRepository.findById(id).switchIfEmpty(
+                Mono.error(new UserNotFoundException(id))
+        );
     }
 
     public Mono<User> save(User user) {
@@ -26,6 +29,8 @@ public class UserService {
     }
 
     public Mono<Void> deleteById(String id) {
-        return this.userRepository.deleteById(id);
+        return this.findById(id).flatMap((user) ->
+                this.userRepository.deleteById(user.getId())
+        );
     }
 }

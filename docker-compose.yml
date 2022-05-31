@@ -57,8 +57,10 @@ services:
     networks:
       - backend
     depends_on:
-      - ec-eureka      
-      - ec-users-db
+      ec-eureka:
+        condition: service_started      
+      ec-users-db:
+        condition: service_started
 
   gateway:
     container_name: ec-gateway
@@ -71,7 +73,10 @@ services:
     ports:
       - '5000:5000'
     depends_on:
-      - ec-eureka
+      ec-eureka:
+        condition: service_started
+      ec-users:
+        condition: service_started
 
   prometheus:
     container_name: ec-prometheus
@@ -84,8 +89,10 @@ services:
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
     depends_on:
-      - ec-eureka
-      - ec-gateway
+      ec-eureka:
+        condition: service_started
+      ec-gateway:
+        condition: service_started
 
   grafana:
     container_name: ec-grafana
@@ -101,7 +108,8 @@ services:
       - GF_ADMIN_USER=grafana
       - GF_ADMIN_PASSWORD=grafana
     depends_on:
-      - ec-prometheus
+      ec-prometheus:
+        condition: service_started
 
 networks:
   backend:

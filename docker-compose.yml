@@ -67,9 +67,6 @@ services:
     restart: always
     networks:
       - backend
-    environment:
-      - MONGO_INITDB_ROOT_USERNAME=mongo
-      - MONGO_INITDB_ROOT_PASSWORD=mongo
 
   users-db:
     container_name: ec-users-db

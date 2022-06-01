@@ -3,7 +3,6 @@ package com.github.sozinhos.ecommerce.orders.controllers;
 import com.github.sozinhos.ecommerce.orders.entities.Order;
 import com.github.sozinhos.ecommerce.orders.services.OrderService;
 
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -37,8 +36,7 @@ public class OrderController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteOrder(@PathVariable String id) {
-        orderService.findByIdAndDelete(id);
-        return ResponseEntity.noContent().build();
+    public Order deleteOrder(@PathVariable String id) {
+        return orderService.findByIdAndCancel(id);
     }
 }

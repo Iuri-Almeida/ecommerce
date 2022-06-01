@@ -68,7 +68,7 @@ public class OrderService {
     public Order create(Order order) {
         order.setProducts(processAndCheckProducts(order.getProducts()));
         order.setTotal(calculateTotal(order.getProducts()));
-        order.setStatus(OrderStatus.PENDING);
+        order.setStatus(OrderStatus.CART);
 
         return orderRepository.save(order);
     }
@@ -77,8 +77,12 @@ public class OrderService {
         return orderRepository.findById(id).orElseThrow(OrderNotFoundException::new);
     }
 
-    public void findByIdAndDelete(String id) {
-        orderRepository.delete(findById(id));
+    public Order findByIdAndCancel(String id) {
+        Order order = findById(id);
+
+        order.setStatus(OrderStatus.CANCELED);
+
+        return orderRepository.save(order);
     }
 
     public Order findByIdAndUpdate(String id, Order order) {

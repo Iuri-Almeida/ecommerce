@@ -1,4 +1,4 @@
-version: "3.9"
+version: "3.3"
 
 services:
   eureka:
@@ -40,10 +40,8 @@ services:
     networks:
       - backend
     depends_on:
-      eureka:
-        condition: service_started
-      products-db:
-        condition: service_started
+      - eureka
+      - products-db
 
   orders-db:
     container_name: ec-orders-db
@@ -71,11 +69,9 @@ services:
     networks:
       - backend
     depends_on:
-      eureka:
-        condition: service_started      
-      users-db:
-        condition: service_started
-  
+      - eureka
+      - users-db
+
   payments:
     container_name: ec-payments
     build:
@@ -85,10 +81,8 @@ services:
     networks:
       - backend
     depends_on:
-      eureka:
-        condition: service_started   
-      rabbitmq:
-        condition: service_started   
+      - eureka
+      - rabbitmq
 
   gateway:
     container_name: ec-gateway
@@ -101,12 +95,9 @@ services:
     ports:
       - '5000:5000'
     depends_on:
-      eureka:
-        condition: service_started
-      users:
-        condition: service_started
-      products:
-        condition: service_started
+      - eureka
+      - users
+      - products
 
   prometheus:
     container_name: ec-prometheus
@@ -119,16 +110,11 @@ services:
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
     depends_on:
-      eureka:
-        condition: service_started
-      gateway:
-        condition: service_started
-      products:
-        condition: service_started
-      users:
-        condition: service_started
-      payments:
-        condition: service_started
+      - eureka
+      - gateway
+      - products
+      - users
+      - payments
 
   grafana:
     container_name: ec-grafana
@@ -147,8 +133,7 @@ services:
       - GF_ADMIN_USER=grafana
       - GF_ADMIN_PASSWORD=grafana
     depends_on:
-      prometheus:
-        condition: service_started
+      - prometheus
 
 networks:
   backend:

@@ -52,12 +52,9 @@ services:
     networks:
       - backend
     depends_on:
-      eureka:
-        condition: service_started
-      orders-db:
-        condition: service_started
-      rabbitmq:
-        condition: service_started
+      - eureka
+      - orders-db
+      - rabbitmq
 
   orders-db:
     container_name: ec-orders-db

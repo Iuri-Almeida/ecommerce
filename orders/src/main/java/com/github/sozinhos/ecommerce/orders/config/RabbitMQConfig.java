@@ -14,6 +14,7 @@ import org.springframework.context.annotation.Configuration;
 public class RabbitMQConfig {
     public static final String ORDERS_PAYMENTS_QUEUE = "orders.payments";
     public static final String PAYMENTS_ORDERS_QUEUE = "payments.orders";
+    public static final String ORDERS_PAYMENTS_DIRECT_EXCHANGE = "ordersPaymentsDirect";
 
     @Value("${spring.rabbitmq.host}")
     String host;
@@ -35,6 +36,22 @@ public class RabbitMQConfig {
     @Bean
     public Queue paymentsOrdersQueue() {
         return new Queue(PAYMENTS_ORDERS_QUEUE);
+    }
+
+    @Bean
+    public DirectExchange ordersPaymentsDirectExchange() {
+        return new DirectExchange(ORDERS_PAYMENTS_DIRECT_EXCHANGE);
+    }
+
+    @Bean
+    public Binding ordersPaymentsDirectBinding(
+        Queue ordersPaymentsQueue,
+        DirectExchange ordersPaymentsDirectExchange
+    ) {
+        return BindingBuilder
+            .bind(ordersPaymentsQueue)
+            .to(ordersPaymentsDirectExchange)
+            .with("");
     }
 
     @Bean

@@ -45,6 +45,22 @@ services:
       products-db:
         condition: service_started
 
+  orders:
+    container_name: ec-orders
+    build:
+      context: ./orders
+      dockerfile: Dockerfile
+    restart: always
+    networks:
+      - backend
+    depends_on:
+      eureka:
+        condition: service_started
+      orders-db:
+        condition: service_started
+      rabbitmq:
+        condition: service_started
+
   orders-db:
     container_name: ec-orders-db
     image: mongo:5
@@ -107,6 +123,8 @@ services:
         condition: service_started
       products:
         condition: service_started
+      orders:
+        condition: service_started
 
   prometheus:
     container_name: ec-prometheus
@@ -128,6 +146,8 @@ services:
       users:
         condition: service_started
       payments:
+        condition: service_started
+      orders:
         condition: service_started
 
   grafana:

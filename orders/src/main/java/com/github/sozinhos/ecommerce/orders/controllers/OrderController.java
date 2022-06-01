@@ -28,7 +28,7 @@ public class OrderController {
         return orderService.create(order);
     }
 
-    @PostMapping
+    @GetMapping
     public List<Order> listOrders(@RequestParam(defaultValue = "", value = "user_id") String userId) {
         return orderService.listByUserId(userId);
     }

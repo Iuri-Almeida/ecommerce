@@ -1,7 +1,7 @@
-FROM nginx
+FROM docker/compose
 
 WORKDIR /app
 
 COPY . .
 
-ENTRYPOINT ["docker", "compose", "up", "--build"]
+ENTRYPOINT ["docker-compose", "up", "--build"]

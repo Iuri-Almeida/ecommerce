@@ -11,6 +11,7 @@ import com.github.sozinhos.ecommerce.orders.entities.Order;
 import com.github.sozinhos.ecommerce.orders.entities.OrderStatus;
 import com.github.sozinhos.ecommerce.orders.entities.Product;
 import com.github.sozinhos.ecommerce.orders.exceptions.OrderNotFoundException;
+import com.github.sozinhos.ecommerce.orders.exceptions.RequestHasNoUserIdException;
 import com.github.sozinhos.ecommerce.orders.exceptions.OrderCannotBeChangedException;
 import com.github.sozinhos.ecommerce.orders.exceptions.OrderHasNoUserException;
 import com.github.sozinhos.ecommerce.orders.repositories.OrderRepository;
@@ -138,5 +139,12 @@ public class OrderService {
         template.convertAndSend(RabbitMQConfig.ORDERS_PAYMENTS_DIRECT_EXCHANGE, "", dbOrder);
 
         return orderRepository.save(dbOrder);
+    }
+
+    public List<Order> listByUserId(String id) {
+        if (id.equals("")) {
+            throw new RequestHasNoUserIdException();
+        }
+        return orderRepository.listByUserId(id);
     }
 }

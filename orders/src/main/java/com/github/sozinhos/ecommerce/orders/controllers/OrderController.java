@@ -39,4 +39,9 @@ public class OrderController {
     public Order deleteOrder(@PathVariable String id) {
         return orderService.findByIdAndCancel(id);
     }
+
+    @PostMapping("/{id}/commit")
+    public Order orderCommit(@PathVariable String id) {
+        return orderService.findByIdAndCommit(id);
+    }
 }

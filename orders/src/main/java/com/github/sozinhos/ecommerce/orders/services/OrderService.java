@@ -6,12 +6,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import com.github.sozinhos.ecommerce.orders.config.RabbitMQConfig;
 import com.github.sozinhos.ecommerce.orders.entities.Order;
 import com.github.sozinhos.ecommerce.orders.entities.OrderStatus;
 import com.github.sozinhos.ecommerce.orders.entities.Product;
 import com.github.sozinhos.ecommerce.orders.exceptions.OrderNotFoundException;
 import com.github.sozinhos.ecommerce.orders.repositories.OrderRepository;
 
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
@@ -21,6 +23,7 @@ import lombok.RequiredArgsConstructor;
 public class OrderService {
     private final OrderRepository orderRepository;
     private final ProductService productService;
+    private final RabbitTemplate template;
 
     public List<Product> processProducts(List<Product> products) {
         List<Product> resultList = new ArrayList<>();
@@ -106,5 +109,16 @@ public class OrderService {
         dbOrder.setStatus(status);
 
         orderRepository.save(dbOrder);
+    }
+
+    public Order findByIdAndCommit(String id) {
+        Order dbOrder = findById(id);
+        
+        productService.batchUpdate(dbOrder.getProducts());
+        dbOrder.setStatus(OrderStatus.PENDING);
+        
+        template.convertAndSend(RabbitMQConfig.ORDERS_PAYMENTS_DIRECT_EXCHANGE, "", dbOrder);
+
+        return orderRepository.save(dbOrder);
     }
 }

@@ -26,29 +26,18 @@ public class RabbitMQConfig {
     String password;
 
     @Bean
-    public TopicExchange ordersExchange() {
-        return new TopicExchange("orders");
-    }
-
-    @Bean
     public Queue ordersPaymentsQueue() {
         return new Queue("orders.payments");
     }
 
     @Bean
-    public Binding ordersPaymentsBinding(
-            Queue ordersPaymentsQueue,
-            TopicExchange ordersExchange
-    ) {
-        return BindingBuilder
-                .bind(ordersPaymentsQueue)
-                .to(ordersExchange)
-                .with("orders.payments");
+    public DirectExchange paymentsOrdersExchange() {
+        return new DirectExchange("payments.orders");
     }
 
     @Bean
-    public TopicExchange paymentsExchange() {
-        return new TopicExchange("payments");
+    public FanoutExchange paymentsOrdersAndProductsExchange() {
+        return new FanoutExchange("payments.orders_products");
     }
 
     @Bean
@@ -57,30 +46,39 @@ public class RabbitMQConfig {
     }
 
     @Bean
-    public Binding paymentsOrdersBinding(
-            Queue paymentsOrdersQueue,
-            TopicExchange paymentsExchange
-    ) {
-        return BindingBuilder
-                .bind(paymentsOrdersQueue)
-                .to(paymentsExchange)
-                .with("payments.orders");
-    }
-
-    @Bean
     public Queue paymentsProductsQueue() {
         return new Queue("payments.products");
     }
 
     @Bean
-    public Binding paymentsProductsBinding(
+    public Binding paymentsOrdersBinding(
+            Queue paymentsOrdersQueue,
+            DirectExchange paymentsOrdersExchange
+    ) {
+        return BindingBuilder
+                .bind(paymentsOrdersQueue)
+                .to(paymentsOrdersExchange)
+                .with("");
+    }
+
+    @Bean
+    public Binding paymentsOrdersFanoutBinding(
+            Queue paymentsOrdersQueue,
+            FanoutExchange paymentsOrdersAndProductsExchange
+    ) {
+        return BindingBuilder
+                .bind(paymentsOrdersQueue)
+                .to(paymentsOrdersAndProductsExchange);
+    }
+
+    @Bean
+    public Binding paymentsProductsFanoutBinding(
             Queue paymentsProductsQueue,
-            TopicExchange paymentsExchange
+            FanoutExchange paymentsOrdersAndProductsExchange
     ) {
         return BindingBuilder
                 .bind(paymentsProductsQueue)
-                .to(paymentsExchange)
-                .with("payments.products");
+                .to(paymentsOrdersAndProductsExchange);
     }
 
     @Bean

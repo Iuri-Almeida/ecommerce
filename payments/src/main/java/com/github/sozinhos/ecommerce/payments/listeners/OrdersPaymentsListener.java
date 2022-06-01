@@ -18,14 +18,16 @@ public class OrdersPaymentsListener {
     @RabbitListener(queues = "orders.payments")
     public void listener(Order order) {
       boolean successfulPayment = new Random().nextInt(100) < 80;
+      String exchange;
 
       if (successfulPayment) {
           order.setStatus(OrderStatus.SUCCESS);
+          exchange = "payments.orders";
       } else {
           order.setStatus(OrderStatus.ERROR);
-          template.convertAndSend("payments", "payments.products", order);
+          exchange = "payments.orders_products";
       }
 
-      template.convertAndSend("payments", "payments.orders", order);
+      template.convertAndSend(exchange, "", order);
     }
 }

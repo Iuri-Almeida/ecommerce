@@ -57,9 +57,9 @@ services:
     networks:
       - backend
     depends_on:
-      ec-eureka:
+      eureka:
         condition: service_started      
-      ec-users-db:
+      users-db:
         condition: service_started
   
   payments:
@@ -71,9 +71,9 @@ services:
     networks:
       - backend
     depends_on:
-      ec-eureka:
+      eureka:
         condition: service_started   
-      ec-rabbitmq:
+      rabbitmq:
         condition: service_started   
 
   gateway:
@@ -87,9 +87,9 @@ services:
     ports:
       - '5000:5000'
     depends_on:
-      ec-eureka:
+      eureka:
         condition: service_started
-      ec-users:
+      users:
         condition: service_started
 
   prometheus:
@@ -103,9 +103,13 @@ services:
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
     depends_on:
-      ec-eureka:
+      eureka:
         condition: service_started
-      ec-gateway:
+      gateway:
+        condition: service_started
+      users:
+        condition: service_started
+      payments:
         condition: service_started
 
   grafana:
@@ -122,7 +126,7 @@ services:
       - GF_ADMIN_USER=grafana
       - GF_ADMIN_PASSWORD=grafana
     depends_on:
-      ec-prometheus:
+      prometheus:
         condition: service_started
 
 networks:

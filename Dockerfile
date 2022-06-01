@@ -1,4 +1,4 @@
-FROM openjdk:18-alpine
+FROM nginx
 
 WORKDIR /app
 

@@ -44,9 +44,14 @@ public class ProductController {
     }
 
     @PutMapping
-    @Transactional
     public ResponseEntity<Void> batchUpdate(@RequestBody List<Product> products) {
         productService.batchUpdate(products);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping(value = "/check")
+    public ResponseEntity<Void> batchCheck(@RequestBody List<Product> products) {
+        productService.batchCheck(products);
         return ResponseEntity.noContent().build();
     }
 

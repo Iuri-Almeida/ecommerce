@@ -3,12 +3,14 @@ package com.github.sozinhos.ecommerce.products.services;
 import com.github.sozinhos.ecommerce.products.entities.Product;
 import com.github.sozinhos.ecommerce.products.repositories.ProductRepository;
 import com.github.sozinhos.ecommerce.products.services.exceptions.ProductDatabaseException;
+import com.github.sozinhos.ecommerce.products.services.exceptions.ProductInsufficientAmountException;
 import com.github.sozinhos.ecommerce.products.services.exceptions.ProductNotFoundException;
 import com.github.sozinhos.ecommerce.products.services.exceptions.ProductNullParameterException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 
@@ -58,9 +60,19 @@ public class ProductService {
         productRepository.save(dbProduct);
     }
 
+    @Transactional
     public void batchUpdate(List<Product> products) {
         for (Product product : products) {
             this.update(product, -1);
+        }
+    }
+
+    public void batchCheck(List<Product> products) {
+        for (Product product : products) {
+            Product dbProduct = this.findById(product.getId());
+            if (dbProduct.getAmount() < product.getAmount()) {
+                throw new ProductInsufficientAmountException("Product '" + product.getName() + "' with insufficient amount");
+            }
         }
     }
 }

@@ -11,6 +11,8 @@ import com.github.sozinhos.ecommerce.orders.entities.Order;
 import com.github.sozinhos.ecommerce.orders.entities.OrderStatus;
 import com.github.sozinhos.ecommerce.orders.entities.Product;
 import com.github.sozinhos.ecommerce.orders.exceptions.OrderNotFoundException;
+import com.github.sozinhos.ecommerce.orders.exceptions.OrderCannotBeChangedException;
+import com.github.sozinhos.ecommerce.orders.exceptions.OrderHasNoUserException;
 import com.github.sozinhos.ecommerce.orders.repositories.OrderRepository;
 
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -83,6 +85,10 @@ public class OrderService {
     public Order findByIdAndCancel(String id) {
         Order order = findById(id);
 
+        if (!OrderStatus.CART.equals(order.getStatus())) {
+            throw new OrderCannotBeChangedException();
+        }
+
         order.setStatus(OrderStatus.CANCELED);
 
         return orderRepository.save(order);
@@ -90,6 +96,10 @@ public class OrderService {
 
     public Order findByIdAndUpdate(String id, Order order) {
         Order dbOrder = findById(id);
+
+        if (!OrderStatus.CART.equals(dbOrder.getStatus())) {
+            throw new OrderCannotBeChangedException();
+        }
 
         if (Objects.nonNull(order.getProducts())) {
             dbOrder.setProducts(processAndCheckProducts(order.getProducts()));
@@ -114,6 +124,14 @@ public class OrderService {
     public Order findByIdAndCommit(String id) {
         Order dbOrder = findById(id);
         
+        if (!OrderStatus.CART.equals(dbOrder.getStatus())) {
+            throw new OrderCannotBeChangedException();
+        }
+
+        if (Objects.isNull(dbOrder.getUser())) {
+            throw new OrderHasNoUserException();
+        }
+
         productService.batchUpdate(dbOrder.getProducts());
         dbOrder.setStatus(OrderStatus.PENDING);
         

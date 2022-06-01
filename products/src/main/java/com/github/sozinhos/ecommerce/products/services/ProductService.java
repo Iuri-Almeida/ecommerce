@@ -67,12 +67,14 @@ public class ProductService {
         }
     }
 
-    public void batchCheck(List<Product> products) {
+    public List<Product> batchCheck(List<Product> products) {
         for (Product product : products) {
             Product dbProduct = this.findById(product.getId());
             if (dbProduct.getAmount() < product.getAmount()) {
                 throw new ProductInsufficientAmountException("Product '" + product.getName() + "' with insufficient amount");
             }
+            product.setPrice(dbProduct.getPrice());
         }
+        return products;
     }
 }

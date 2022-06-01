@@ -2,14 +2,57 @@ package com.github.sozinhos.ecommerce.orders.services;
 
 import java.util.List;
 
+import com.github.sozinhos.ecommerce.orders.clients.ProductServiceClient;
 import com.github.sozinhos.ecommerce.orders.entities.Product;
+import com.github.sozinhos.ecommerce.orders.exceptions.ProductInsufficientAmountException;
+import com.github.sozinhos.ecommerce.orders.exceptions.ProductNotFoundException;
+import com.github.sozinhos.ecommerce.orders.exceptions.ProductServiceUnavailableException;
 
-import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.stereotype.Service;
 
-@FeignClient(name = "PRODUCTS-SERVICE")
-public interface ProductService {
-    @RequestMapping(value = "/products/check", method = RequestMethod.POST)
-    void checkStock(List<Product> products);
+import feign.FeignException.FeignClientException;
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
+@Service
+public class ProductService {
+    private final ProductServiceClient productServiceClient;
+
+    public void checkStock(List<Product> products) {
+        try {
+            productServiceClient.checkStock(products);
+        } catch (FeignClientException e) {
+            switch (e.status()) {
+                case 404:
+                    throw new ProductNotFoundException();
+            
+                case 400:
+                    throw new ProductInsufficientAmountException();
+                
+                default:
+                    throw new ProductServiceUnavailableException();
+            }
+        } catch (Exception e) {
+            throw new ProductServiceUnavailableException();
+        }
+    }
+
+    public void batchUpdate(List<Product> products) {
+        try {
+            productServiceClient.batchUpdate(products);
+        } catch (FeignClientException e) {
+            switch (e.status()) {
+                case 404:
+                    throw new ProductNotFoundException();
+            
+                case 400:
+                    throw new ProductInsufficientAmountException();
+                
+                default:
+                    throw new ProductServiceUnavailableException();
+            }
+        } catch (Exception e) {
+            throw new ProductServiceUnavailableException();
+        }
+    }
 }

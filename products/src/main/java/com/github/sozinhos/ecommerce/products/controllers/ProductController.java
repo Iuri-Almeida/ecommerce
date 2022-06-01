@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.transaction.Transactional;
 import java.net.URI;
 import java.util.List;
 
@@ -32,7 +33,7 @@ public class ProductController {
     @PostMapping
     public ResponseEntity<Product> insert(@RequestBody Product product) {
         product = productService.insert(product);
-        URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(product.getProductId()).toUri();
+        URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(product.getId()).toUri();
         return ResponseEntity.created(uri).body(product);
     }
 
@@ -41,4 +42,12 @@ public class ProductController {
         productService.delete(id);
         return ResponseEntity.noContent().build();
     }
+
+    @PutMapping
+    @Transactional
+    public ResponseEntity<Void> batchUpdate(@RequestBody List<Product> products) {
+        productService.batchUpdate(products);
+        return ResponseEntity.noContent().build();
+    }
+
 }

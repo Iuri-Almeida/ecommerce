@@ -49,4 +49,18 @@ public class ProductService {
             throw new ProductDatabaseException("Product with other dependencies in database");
         }
     }
+
+    public void update(Product product, int factor) {
+        Product dbProduct = this.findById(product.getId());
+        if (product.getAmount() != null) {
+            dbProduct.setAmount(dbProduct.getAmount() + product.getAmount() * factor);
+        }
+        productRepository.save(dbProduct);
+    }
+
+    public void batchUpdate(List<Product> products) {
+        for (Product product : products) {
+            this.update(product, -1);
+        }
+    }
 }

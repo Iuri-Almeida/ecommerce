@@ -9,7 +9,7 @@ public class Product {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long productId;
+    private Long id;
 
     private String name;
     private Double price;
@@ -18,19 +18,19 @@ public class Product {
     public Product() {
     }
 
-    public Product(Long productId, String name, Double price, Integer amount) {
-        this.productId = productId;
+    public Product(Long id, String name, Double price, Integer amount) {
+        this.id = id;
         this.name = name;
         this.price = price;
         this.amount = amount;
     }
 
-    public Long getProductId() {
-        return productId;
+    public Long getId() {
+        return id;
     }
 
-    public void setProductId(Long productId) {
-        this.productId = productId;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -62,11 +62,11 @@ public class Product {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Product product = (Product) o;
-        return productId.equals(product.productId);
+        return id.equals(product.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(productId);
+        return Objects.hash(id);
     }
 }

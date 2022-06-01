@@ -1,10 +1,31 @@
 spring:
+  application:
+    name: orders-service
+
   data:
     mongodb:
-      host: orders_db
-      database: orders_db
+      uri: mongodb://ec-orders-db:27017/orders
 
   rabbitmq:
-    host: rabbitmq
+    host: ec-rabbitmq
+    port: 5672
     username: guest
     password: guest
+
+server:
+  port: 8084
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://ec-eureka:8761/eureka/
+  instance:
+    hostname: ec-orders

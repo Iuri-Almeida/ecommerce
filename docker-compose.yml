@@ -43,15 +43,28 @@ services:
       - eureka
       - products-db
 
+  orders:
+    container_name: ec-orders
+    build:
+      context: ./orders
+      dockerfile: Dockerfile
+    restart: always
+    networks:
+      - backend
+    depends_on:
+      eureka:
+        condition: service_started
+      orders-db:
+        condition: service_started
+      rabbitmq:
+        condition: service_started
+
   orders-db:
     container_name: ec-orders-db
     image: mongo:5
     restart: always
     networks:
       - backend
-    environment:
-      - MONGO_INITDB_ROOT_USERNAME=mongo
-      - MONGO_INITDB_ROOT_PASSWORD=mongo
 
   users-db:
     container_name: ec-users-db
@@ -98,6 +111,7 @@ services:
       - eureka
       - users
       - products
+      - orders
 
   prometheus:
     container_name: ec-prometheus
@@ -115,6 +129,7 @@ services:
       - products
       - users
       - payments
+      - orders
 
   grafana:
     container_name: ec-grafana

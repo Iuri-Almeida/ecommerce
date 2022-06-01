@@ -1,5 +1,11 @@
 # E-Commerce
 
+<div align="center">
+
+<img width="700" src="https://github.com/Iuri-Almeida/ecommerce/blob/main/docs/diagram.png"  alt="Diagram"/>
+
+</div>
+
 ## Description
 
 Microservices-based backend application to manage an e-commerce. Please see the project [statement](https://github.com/Iuri-Almeida/ecommerce/blob/main/docs/statement.md) (pt-BR) for details.

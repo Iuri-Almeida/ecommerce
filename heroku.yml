@@ -1,9 +1,9 @@
 build:
   docker:
     web:
-      - ./eureka/Dockerfile
-      - ./gateway/Dockerfile
-      - ./orders/Dockerfile
-      - ./payments/Dockerfile
-      - ./products/Dockerfile
-      - ./users/Dockerfile
+      - './eureka/Dockerfile'
+      - './gateway/Dockerfile'
+      - './orders/Dockerfile'
+      - './payments/Dockerfile'
+      - './products/Dockerfile'
+      - './users/Dockerfile'

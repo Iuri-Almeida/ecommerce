@@ -1,7 +1,13 @@
-FROM docker/compose
+FROM ubuntu
+
+RUN apt-get update && apt-get install -y \
+    docker-compose && \
+    rm -rf /var/lib/apt/lists/*
+
+RUN systemctl start docker
 
 WORKDIR /app
 
 COPY . .
 
-ENTRYPOINT ["docker-compose", "up", "--build"]
+CMD ["docker-compose", "up", "--build"]

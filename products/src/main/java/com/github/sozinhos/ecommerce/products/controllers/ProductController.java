@@ -6,7 +6,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import javax.transaction.Transactional;
 import java.net.URI;
 import java.util.List;
 
@@ -42,17 +41,4 @@ public class ProductController {
         productService.delete(id);
         return ResponseEntity.noContent().build();
     }
-
-    @PutMapping
-    public ResponseEntity<Void> batchUpdate(@RequestBody List<Product> products) {
-        productService.batchUpdate(products);
-        return ResponseEntity.noContent().build();
-    }
-
-    @PostMapping(value = "/check")
-    public ResponseEntity<Void> batchCheck(@RequestBody List<Product> products) {
-        productService.batchCheck(products);
-        return ResponseEntity.noContent().build();
-    }
-
 }

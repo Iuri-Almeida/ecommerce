@@ -74,6 +74,7 @@ public class ProductService {
                 throw new ProductInsufficientAmountException("Product '" + product.getName() + "' with insufficient amount");
             }
             product.setPrice(dbProduct.getPrice());
+            product.setName(dbProduct.getName());
         }
         return products;
     }

@@ -125,6 +125,10 @@ services:
         condition: service_started
       products:
         condition: service_started
+      users:
+        condition: service_started
+      payments:
+        condition: service_started
 
   grafana:
     container_name: ec-grafana

@@ -10,9 +10,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 @FeignClient(name = "PRODUCTS-SERVICE")
 public interface ProductServiceClient {
-    @RequestMapping(value = "/products/check", method = RequestMethod.POST)
-    void checkStock(List<Product> products);
+    @RequestMapping(value = "/batch/check", method = RequestMethod.POST)
+    List<Product> batchCheck(List<Product> products);
 
-    @RequestMapping(value = "/products", method = RequestMethod.PUT)
+    @RequestMapping(value = "/batch/update", method = RequestMethod.PUT)
     void batchUpdate(List<Product> products);
 }

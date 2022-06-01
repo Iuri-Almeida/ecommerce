@@ -18,9 +18,9 @@ import lombok.RequiredArgsConstructor;
 public class ProductService {
     private final ProductServiceClient productServiceClient;
 
-    public void checkStock(List<Product> products) {
+    public List<Product> checkStock(List<Product> products) {
         try {
-            productServiceClient.checkStock(products);
+            return productServiceClient.batchCheck(products);
         } catch (FeignClientException e) {
             switch (e.status()) {
                 case 404:

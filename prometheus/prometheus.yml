@@ -24,3 +24,9 @@ scrape_configs:
     metrics_path: /actuator/prometheus
     static_configs:
       - targets: [ 'ec-users:8081' ]
+
+  - job_name: 'ec-payments'
+    scrape_interval: 5s
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets: [ 'ec-payments:8082' ]

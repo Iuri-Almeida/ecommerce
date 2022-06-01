@@ -61,6 +61,20 @@ services:
         condition: service_started      
       ec-users-db:
         condition: service_started
+  
+  payments:
+    container_name: ec-payments
+    build:
+      context: ./payments
+      dockerfile: Dockerfile
+    restart: always
+    networks:
+      - backend
+    depends_on:
+      ec-eureka:
+        condition: service_started   
+      ec-rabbitmq:
+        condition: service_started   
 
   gateway:
     container_name: ec-gateway

@@ -1,0 +1,26 @@
+spring:
+  application:
+    name: payments-service
+  rabbitmq:
+    host: ec-rabbitmq
+    port: 5672
+    username: guest
+    password: guest
+
+server:
+  port: 8082
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://ec-eureka:8761/eureka/
+  instance:
+    hostname: ec-payments

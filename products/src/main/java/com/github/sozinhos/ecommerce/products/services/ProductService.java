@@ -55,6 +55,9 @@ public class ProductService {
     public void update(Product product, int factor) {
         Product dbProduct = this.findById(product.getId());
         if (product.getAmount() != null) {
+            if (dbProduct.getAmount() < product.getAmount()) {
+                throw new ProductInsufficientAmountException("Product '" + product.getName() + "' with insufficient amount");
+            }
             dbProduct.setAmount(dbProduct.getAmount() + product.getAmount() * factor);
         }
         productRepository.save(dbProduct);

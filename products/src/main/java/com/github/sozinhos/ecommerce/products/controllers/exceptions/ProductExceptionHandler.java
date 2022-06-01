@@ -1,6 +1,7 @@
 package com.github.sozinhos.ecommerce.products.controllers.exceptions;
 
 import com.github.sozinhos.ecommerce.products.services.exceptions.ProductDatabaseException;
+import com.github.sozinhos.ecommerce.products.services.exceptions.ProductInsufficientAmountException;
 import com.github.sozinhos.ecommerce.products.services.exceptions.ProductNotFoundException;
 import com.github.sozinhos.ecommerce.products.services.exceptions.ProductNullParameterException;
 import org.springframework.http.HttpStatus;
@@ -33,6 +34,14 @@ public class ProductExceptionHandler {
     @ExceptionHandler(ProductDatabaseException.class)
     public ResponseEntity<StandardError> productDatabaseException(ProductDatabaseException e, HttpServletRequest request) {
         String error = "Database error";
+        HttpStatus status = HttpStatus.BAD_REQUEST;
+        StandardError err = new StandardError(Instant.now(), status.value(), error, e.getMessage(), request.getRequestURI());
+        return ResponseEntity.status(status).body(err);
+    }
+
+    @ExceptionHandler(ProductInsufficientAmountException.class)
+    public ResponseEntity<StandardError> productInsufficientAmount(ProductInsufficientAmountException e, HttpServletRequest request) {
+        String error = "Insufficient amount";
         HttpStatus status = HttpStatus.BAD_REQUEST;
         StandardError err = new StandardError(Instant.now(), status.value(), error, e.getMessage(), request.getRequestURI());
         return ResponseEntity.status(status).body(err);

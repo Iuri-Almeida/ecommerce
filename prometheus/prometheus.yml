@@ -36,3 +36,9 @@ scrape_configs:
     metrics_path: /actuator/prometheus
     static_configs:
       - targets: [ 'ec-products:8083' ]
+
+  - job_name: 'ec-orders'
+    scrape_interval: 5s
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets: [ 'ec-orders:8084' ]

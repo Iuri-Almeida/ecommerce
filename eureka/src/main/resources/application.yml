@@ -1,26 +1,15 @@
 spring:
   application:
-    name: eureka
+    name: eureka-service
 
 server:
   port: 8761
 
 management:
-  endpoint:
-    info:
-      enabled: true
   endpoints:
     web:
       exposure:
         include: "*"
-
-info:
-  app:
-    name: @project.name@
-    description: @project.description@
-    version: @project.version@
-    java:
-      version: @java.version@
 
 eureka:
   client:

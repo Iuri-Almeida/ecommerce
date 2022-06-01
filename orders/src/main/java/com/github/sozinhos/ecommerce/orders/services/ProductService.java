@@ -19,6 +19,10 @@ public class ProductService {
     private final ProductServiceClient productServiceClient;
 
     public List<Product> checkStock(List<Product> products) {
+        if (products.size() == 0) {
+            return products;
+        }
+
         try {
             return productServiceClient.batchCheck(products);
         } catch (FeignClientException e) {

@@ -1,0 +1,34 @@
+spring:
+  application:
+    name: products-service
+  rabbitmq:
+    host: ec-rabbitmq
+    port: 5672
+    username: guest
+    password: guest
+  datasource:
+    url: jdbc:postgresql://ec-products-db:5432/postgres
+    username: postgres
+    password: postgres
+  jpa:
+    generate-ddl: true
+    hibernate:
+      ddl-auto: create-drop
+
+server:
+  port: 8083
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://ec-eureka:8761/eureka/
+  instance:
+    hostname: ec-products

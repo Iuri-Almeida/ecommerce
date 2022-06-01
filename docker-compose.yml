@@ -22,7 +22,7 @@ services:
       - '15672:15672'
 
   products-db:
-    container_name: ec-postgres-db
+    container_name: ec-products-db
     image: postgres:14
     restart: always
     networks:
@@ -30,6 +30,20 @@ services:
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
+
+  products:
+    container_name: ec-products
+    build:
+      context: ./products
+      dockerfile: Dockerfile
+    restart: always
+    networks:
+      - backend
+    depends_on:
+      eureka:
+        condition: service_started
+      products-db:
+        condition: service_started
 
   orders-db:
     container_name: ec-orders-db
@@ -57,9 +71,9 @@ services:
     networks:
       - backend
     depends_on:
-      ec-eureka:
+      eureka:
         condition: service_started      
-      ec-users-db:
+      users-db:
         condition: service_started
   
   payments:
@@ -71,9 +85,9 @@ services:
     networks:
       - backend
     depends_on:
-      ec-eureka:
+      eureka:
         condition: service_started   
-      ec-rabbitmq:
+      rabbitmq:
         condition: service_started   
 
   gateway:
@@ -87,9 +101,11 @@ services:
     ports:
       - '5000:5000'
     depends_on:
-      ec-eureka:
+      eureka:
         condition: service_started
-      ec-users:
+      users:
+        condition: service_started
+      products:
         condition: service_started
 
   prometheus:
@@ -103,9 +119,15 @@ services:
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
     depends_on:
-      ec-eureka:
+      eureka:
         condition: service_started
-      ec-gateway:
+      gateway:
+        condition: service_started
+      products:
+        condition: service_started
+      users:
+        condition: service_started
+      payments:
         condition: service_started
 
   grafana:
@@ -122,7 +144,7 @@ services:
       - GF_ADMIN_USER=grafana
       - GF_ADMIN_PASSWORD=grafana
     depends_on:
-      ec-prometheus:
+      prometheus:
         condition: service_started
 
 networks:

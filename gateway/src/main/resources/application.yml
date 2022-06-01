@@ -10,6 +10,10 @@ spring:
           uri: lb://USERS-SERVICE
           predicates:
             - Path=/users/**
+        - id: products-service
+          uri: lb://PRODUCTS-SERVICE
+          predicates:
+            - Path=/products/**
 
 server:
   port: 5000
